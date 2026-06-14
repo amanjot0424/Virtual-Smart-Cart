@@ -19,6 +19,7 @@ def main():
         print("1. View Store Inventory")
         print("2. Add Item to Cart")
         print("3. View Current Cart")
+        print("3.5 Remove items from Cart")
         print("4. Checkout & Generate Bill")
         print("5. Exit")
         
@@ -57,7 +58,49 @@ def main():
                 
             case "3":
                 show_cart(user_cart)
+
+            case "3.5":
                 
+                show_cart(user_cart)
+                
+                if not user_cart:
+                    print("❌ Your cart is empty!")
+                    continue
+                    
+                Removing_item = input("Select the Item to Remove: ").strip().lower()
+                cart_names = [item["name"] for item in user_cart]
+                
+                # This will tell us exactly what Python sees
+                print(f"-> Look closely! Your cart actually contains: {cart_names}")
+                print(f"-> You tried to match it with: '{Removing_item}'")
+                
+                if Removing_item not in cart_names:
+                    print("❌ Sorry, You don't have that item!")
+                    continue
+                else:
+                    target_item = [item for item in user_cart if item["name"] == Removing_item][0]
+                    print("1. Reduce the Quantity of the Item")
+                    print("2. Completely Remove the Item")
+                    
+                    select_input = input("Select the Option (1-2): ").strip()
+                    match select_input:
+                        case "1":
+                            qty_input = input("How much quantity you want to reduce: ").strip()
+                            if qty_input.isdigit():
+                                quantity_to_reduce = int(qty_input)
+                                target_item["quantity"] -= quantity_to_reduce
+                                print(f"✅ Reduced quantity of {Removing_item.capitalize()} by {quantity_to_reduce}.")
+                                
+                                if target_item["quantity"] <= 0:
+                                    user_cart.remove(target_item)
+                                    print(f"✅ {Removing_item.capitalize()} is now completely removed.")
+                            else:
+                                print("❌ Invalid quantity.")
+                        case "2":
+                            user_cart.remove(target_item)
+                            print(f"✅ Completely removed {Removing_item.capitalize()} from your cart.")
+                        case _:
+                            print("❌ Invalid option choice.")
             case "4":
                 if not user_cart:
                     print("❌ Your cart is empty. Add items before checking out!")
@@ -78,7 +121,7 @@ def main():
             case "5":
                 print("Exiting application. Goodbye!")
                 break
-                
+
             case _:
                 print("❌ Invalid choice! Please select a valid menu option.")
 
